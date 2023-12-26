@@ -10,7 +10,6 @@
 
     )
 
-"$body"
 
 $smtpserver = "smtp.gmail.com" 
 

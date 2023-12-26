@@ -1,508 +1,314 @@
 @echo off
-
 setlocal enabledelayedexpansion
-
 goto :main
 
- 
-
 :main
-
 setlocal
-
-              goto :readFiles
-
+    goto :readFiles
 endlocal
-
 goto :eof
-
-             
 
 :readFiles
-
 setlocal
+    set /a count=0
 
-set /a count=0
+    for /f %%i in ('dir /b /a-d *.csv') do (
+        set /a count=count+1
+        set choice[!count!]=%%i
+    )
 
-              for /f %%i in ('dir /b /a-d *.csv') do (
+    echo.
 
-                             set /a count=count+1
-
-                             set choice[!count!]=%%i
-
-              )
-
-              echo.
-
-              if !switch!==1 (
-
-                             goto :selectemail
-
-              )
-
-              if NOT !switch!==1 (
-
-                             goto :task
-
-              )
-
-             
-
+    if !switch!==1 (
+        goto :selectemail
+    ) else (
+        goto :task
+    )
 endlocal
-
 goto :eof
-
- 
 
 :task
-
 setlocal
+    set /a switch=0
 
-              set /a switch=0
+    echo Would you like to:
+    echo 1] Concatenate two CSV files
+    echo 2] Add an ID column to a CSV file
+    echo 3] Send a file through email
+    echo.
 
-              echo Would you like to concatenate two CSV files, add an ID column to one CSV file or send a file through email:
+    set /p select=?
 
-              echo 1] Concatenate
+    if !select!==1 goto :file1
+    if !select!==2 goto :selectFile
+    if !select!==3 (
+        set /a switch=1
+        goto :readFiles
+    )
 
-              echo 2] Add ID Column
-
-              echo 3] Send An Email
-
-              echo.
-
-              set /p select=?
-
-              if !select!==1 goto :file1
-
-              if !select!==2 goto :selectFile
-
-              if !select!==3 (
-
-                             set /a switch=1
-
-                             goto :readFiles
-
-              )
-
-              if NOT !select!==1 (
-
-                             if NOT !select!==2 (
-
-                                           if NOT !select!==3 (
-
-                                           echo.
-
-                                           echo.
-
-                                           echo Not a valid response.
-
-                                           goto :task
-
-                                           )
-
-                             )
-
-              )
-
+    if NOT !select!==1 (
+        if NOT !select!==2 (
+            if NOT !select!==3 (
+                echo.
+                echo.
+                echo Not a valid response.
+                goto :task
+            )
+        )
+    )
 endlocal
-
 goto :eof
-
- 
 
 :file1
-
 setlocal
+    Echo.
 
-              Echo.
+    echo Select File 1:
 
-              echo Select File 1:
+    for /l %%x in (1,1,!count!) do (
+        echo  %%x] !choice[%%x]!
+    )
 
-              for /l %%x in (1,1,!count!) do (
+    echo.
 
-                             echo  %%x] !choice[%%x]!
+    set /p select1=?
 
-              )
+    echo.
 
-              echo.
+    if !select1! gtr 0 (
+        goto :1true
+    ) else (
+        goto :1false
+    )
 
-              set /p select1=?
+    :1true
+        if !select1! leq !count! (
+            goto :1true2
+        ) else (
+            goto :1false
+        )
 
-              echo.
+    :1true2
+        echo You chose !choice[%select1%]!
+        echo.
+        goto :file2
 
-              if !select1! gtr 0 (
-
-                             goto :1true
-
-              )else (
-
-                             goto :1false
-
-              )
-
-              :1true
-
-                             if !select1! leq !count! (
-
-                                           goto :1true2
-
-                             )else (
-
-                                           goto :1false
-
-                             )
-
-              :1true2
-
-                             echo You chose !choice[%select1%]!
-
-                             echo.
-
-                             goto :file2
-
-              :1false
-
-                             echo not a valid reponse
-
-                             goto :file1
-
+    :1false
+        echo not a valid response
+        goto :file1
 endlocal
-
 goto :eof
-
- 
 
 :file2
-
 setlocal
+    echo Select File 2:
 
-              echo Select File 2:
+    for /l %%x in (1,1,!count!) do (
+        echo  %%x] !choice[%%x]!
+    )
 
-              for /l %%x in (1,1,!count!) do (
+    echo.
 
-                             echo  %%x] !choice[%%x]!
+    set /p select2=?
 
-              )
+    echo.
 
-              echo.
+    if !select2! gtr 0 (
+        goto :2true
+    ) else (
+        goto :2false
+    )
 
-              set /p select2=?
+    :2true
+        if !select2! leq !count! (
+            goto :2true2
+        ) else (
+            goto :2false
+        )
 
-              echo.
+    :2true2
+        echo You chose !choice[%select2%%]!
+        echo.
+        goto :concatenate
 
-              if !select2! gtr 0 (
-
-                             goto :2true
-
-              )else (
-
-                             goto :2false
-
-              )
-
-              :2true
-
-                             if !select2! leq !count! (
-
-                                           goto :2true2
-
-                             )else (
-
-                                           goto :2false
-
-                             )
-
-              :2true2
-
-                             echo You chose !choice[%select2%%]!
-
-                             echo.
-
-                             goto :concatenate
-
-              :2false
-
-                             echo not a valid reponse
-
-                             goto :file2
-
+    :2false
+        echo not a valid response
+        goto :file2
 endlocal
-
 goto :eof
-
-             
 
 :selectFile
-
 setlocal
+    Echo.
 
-              Echo.
+    echo Select a File:
 
-              echo Select a File:
+    for /l %%x in (1,1,!count!) do (
+        echo  %%x] !choice[%%x]!
+    )
 
-              for /l %%x in (1,1,!count!) do (
+    echo.
 
-                             echo  %%x] !choice[%%x]!
+    set /p select=?
 
-              )
+    echo.
 
-              echo.
+    if !select! gtr 0 (
+        goto :selecttrue
+    ) else (
+        goto :selectfalse
+    )
 
-              set /p select=?
+    :selecttrue
+        if !select! leq !count! (
+            goto :selecttrue2
+        ) else (
+            goto :selectfalse
+        )
 
-              echo.
+    :selecttrue2
+        echo You chose !choice[%select%]!
+        echo.
+        set /a count=0
+        goto :transform
 
-              if !select! gtr 0 (
-
-                             goto :selecttrue
-
-              )else (
-
-                             goto :selectfalse
-
-              )
-
-              :selecttrue
-
-                             if !select! leq !count! (
-
-                                           goto :selecttrue2
-
-                             )else (
-
-                                           goto :selectfalse
-
-                             )
-
-              :selecttrue2
-
-                             echo You chose !choice[%select%]!
-
-                             echo.
-
-                             set /a count=0
-
-                             goto :transform
-
-              :selectfalse
-
-                             echo not a valid reponse
-
-                             goto :selectFile
-
+    :selectfalse
+        echo not a valid response
+        goto :selectFile
 endlocal
-
 goto :eof
-
- 
 
 :concatenate
-
 setlocal
+    copy !choice[%select1%]! + !choice[%select2%]! Concat.csv
 
-              copy !choice[%select1%]! + !choice[%select2%]! Concat.csv
+    echo.
+    echo.
+    echo Complete!
 
-              echo.
-
-              echo.
-
-              echo Complete!
-
-              goto :email
-
+    goto :email
 endlocal
-
 goto :eof
-
- 
-
- 
 
 :transform
-
 setlocal
-			  echo.
+    echo.
 
-              echo Adding ID column to !choice[%select%]!
+    echo Adding ID column to !choice[%select%]!
 
-              set i=0
+    set i=0
 
-              echo ID > output.csv
+    echo ID > output.csv
 
-              (for /f "UseBackQ Delims=" %%a in (!choice[%select%]!) do (
+    (for /f "UseBackQ Delims=" %%a in (!choice[%select%]!) do (
+        echo !i!,%%a >> output.csv
+        set /A "i=(i+1)"
+    ))
+	
+    echo.
+    echo Complete!
 
-                             echo !i!,%%a >> output.csv
-
-                             set /A "i=(i+1)"
-
-              ))
-			  
-			  echo.
-			  
-			  echo Complete!
-
-              goto :email
-
+    goto :email
 endlocal
-
 goto :eof
-
- 
 
 :email
-
 setlocal
+    echo.
+    echo.
 
-              echo.
+    echo Would you like to email a file? (y/n)
 
-              echo.
+    echo.
 
-              echo Would you like to email a file? (y/n)
+    set /p response=
 
-              echo.
+    if !response!==y (
+        set /a switch=1
+        goto :readFiles
+    )
 
-              set /p response=
-
-              if !response!==y (
-
-                             set /a switch=1
-
-                             goto :readFiles
-
-              )
-
-              if !response!==n goto :end
-
+    if !response!==n goto :end
 endlocal
-
 goto :eof
-
- 
 
 :selectemail
-
 setlocal
+    set /a switch=0
 
-              set /a switch=0
+    Echo.
 
-              Echo.
+    echo Select a File to email:
 
-              echo Select a File to email:
+    for /l %%x in (1,1,!count!) do (
+        echo  %%x] !choice[%%x]!
+    )
 
-              for /l %%x in (1,1,!count!) do (
+    echo.
 
-                             echo  %%x] !choice[%%x]!
+    set /p select=?
 
-              )
+    echo.
 
-              echo.
+    if !select! gtr 0 (
+        goto :3true
+    ) else (
+        goto :3false
+    )
 
-              set /p select=?
+    :3true
+        if !select! leq !count! (
+            goto :3true2
+        ) else (
+            goto :3false
+        )
 
-              echo.
+    :3true2
+        echo You chose !choice[%select%]!
+        echo.
 
-              if !select! gtr 0 (
+        set /a count=0
+        goto :emailInfo
 
-                             goto :3true
+        goto :sendemail
 
-              )else (
-
-                             goto :3false
-
-              )
-
-              :3true
-
-                             if !select! leq !count! (
-
-                                           goto :3true2
-
-                             )else (
-
-                                           goto :3false
-
-                             )
-
-              :3true2
-
-                             echo You chose !choice[%select%]!
-
-                             echo.
-
-                             set /a count=0
-
-                             goto :emailInfo
-
-                             goto :sendemail
-
-              :3false
-
-                             echo not a valid reponse
-
-                             goto :selectemail
-
+    :3false
+        echo not a valid response
+        goto :selectemail
 endlocal
-
 goto :eof
-
- 
 
 :emailInfo
-
 setlocal
+    echo.
+    echo Enter email you're sending file to:
+    echo.
 
-              echo.
+    set /p to=?
 
-              echo Enter email you're sending file to:
+    echo.
 
-              echo.
+    echo Enter the Subject:
+    echo.
 
-              set /p to=?
+    set /p subject=?
 
-              echo.
+    echo.
 
-              echo Enter the Subject:
+    echo Enter the body:
+    echo.
 
-              echo.
+    set /p body=?
 
-              set /p subject=?
-
-              echo.
-
-              echo Enter the body:
-
-              echo.
-
-              set /p body=?
-
-              goto :sendemail
-
+    goto :sendemail
 endlocal
-
 goto :eof
-
- 
 
 :sendemail
-
 setlocal
-			  echo !body!
-              PowerShell -NoProfile -ExecutionPolicy Bypass -Command "& './email.ps1'" !choice[%select%]! !to! !subject! "!body!"
-
+    PowerShell -NoProfile -ExecutionPolicy Bypass -Command "& './email.ps1'" !choice[%select%]! !to! !subject! "!body!"
 endlocal
-
 goto :eof
 
- 
-
 :end
-
 setlocal
-
-              echo.
-
-              echo.
-
-              echo Thank you!
-
-endlocal
